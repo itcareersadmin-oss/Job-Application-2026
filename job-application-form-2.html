@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Application Form — IT/NON IT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181F; --ink-soft:#1F2530; --paper:#FFFFFF;
+    --slate:#5B6472; --slate-light:#8A93A3;
+    --brass:#B8853D; --line:#E4E1D8;
+    --success:#2F6F4E; --error:#B33A3A; --bg:#EFEAE0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ font-family:'Work Sans', sans-serif; background:var(--bg); color:var(--ink); padding:32px 16px; }
+  .wrap{ max-width:720px; margin:0 auto; }
+
+  .head{ text-align:center; margin-bottom:32px; }
+  .head .eyebrow{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--brass); margin-bottom:10px; }
+  .head h1{ font-family:'Fraunces', serif; font-weight:600; font-size:30px; color:var(--ink); }
+  .head p{ font-size:13px; color:var(--slate); margin-top:8px; }
+
+  .card{ background:var(--paper); border-radius:6px; box-shadow:0 24px 50px -30px rgba(0,0,0,0.35); overflow:hidden; }
+
+  .section{ padding:28px 28px; border-bottom:1px solid var(--line); }
+  .section:last-of-type{ border-bottom:none; }
+  .section-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:20px; }
+  .section-head .num{ font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--brass); border:1px solid var(--brass); border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .section-head h3{ font-family:'Fraunces', serif; font-weight:600; font-size:17px; }
+  .section-head .req-note{ margin-left:auto; font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--slate-light); text-transform:uppercase; letter-spacing:0.08em; }
+
+  .row{ margin-bottom:16px; }
+  .row.two{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .row.three{ display:grid; grid-template-columns:1.2fr 1.6fr 0.8fr 0.9fr; gap:10px; }
+  @media(max-width:640px){ .row.three{ grid-template-columns:1fr 1fr; } }
+
+  label{ display:block; font-size:12px; font-weight:500; color:var(--ink); margin-bottom:6px; }
+  label .star{ color:var(--error); }
+  .error-text{ font-size:11px; color:var(--error); margin-top:6px; }
+  input.invalid{ border-color:var(--error) !important; }
+  input, select, textarea{
+    width:100%; border:1px solid var(--line); border-radius:3px; padding:10px 11px;
+    font-family:'Work Sans', sans-serif; font-size:14px; color:var(--ink); background:#FCFBF9;
+  }
+  input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--brass); box-shadow:0 0 0 3px rgba(184,133,61,0.15); }
+  textarea{ resize:vertical; min-height:64px; }
+
+  .qual-block{ border:1px solid var(--line); border-radius:4px; padding:16px; margin-bottom:14px; background:#FCFBF9; }
+  .qual-block .qlabel{ font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--slate); margin-bottom:12px; }
+
+  .file-row{ border:1px dashed var(--line); border-radius:4px; padding:14px 16px; margin-bottom:12px; }
+  .file-row label{ margin-bottom:8px; }
+  .file-row .hint{ font-size:11px; color:var(--slate-light); margin-top:6px; }
+  .file-row input[type=file]{ font-size:13px; padding:8px; }
+  .file-row .fname{ font-size:11px; color:var(--success); margin-top:6px; font-family:'IBM Plex Mono', monospace; display:none; }
+
+  .others-file .others-select{ margin-bottom:10px; }
+
+  button.submit{
+    width:100%; background:var(--ink); color:#EDEAE2; border:none; padding:15px;
+    font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;
+    border-radius:4px; cursor:pointer; margin-top:6px;
+  }
+  button.submit:disabled{ opacity:0.6; }
+  .status-line{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--slate-light); margin-top:12px; text-align:center; }
+
+  #formSection.hidden{ display:none; }
+
+  /* confirmation stub */
+  .stub{ display:none; padding:40px 32px; text-align:left; }
+  .stub.show{ display:block; }
+  .stub .stamp{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--success); margin-bottom:10px; }
+  .stub h2{ font-family:'Fraunces', serif; font-weight:600; font-size:22px; margin-bottom:22px; }
+  .id-block{ border:1.5px dashed var(--brass); border-radius:4px; padding:18px 20px; background:#FFFCF6; }
+  .id-label{ font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--slate); margin-bottom:6px; }
+  .id-value{ font-family:'IBM Plex Mono', monospace; font-size:24px; font-weight:600; word-break:break-all; }
+  .stub .meta{ margin-top:20px; font-size:13px; color:var(--slate); line-height:1.7; }
+  .stub .note{ margin-top:20px; font-size:12px; color:var(--slate-light); border-top:1px solid var(--line); padding-top:14px; }
+  .copy-hint{ display:inline-block; margin-top:14px; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--brass); cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="eyebrow">Registry · Careers</div>
+    <h1>Application Form — IT / NON IT</h1>
+    <p>All fields are mandatory. Once you submit, you'll receive a Response ID.</p>
+  </div>
+
+  <div class="card">
+    <div id="formSection">
+      <form id="appForm">
+
+        <div class="section">
+          <div class="section-head"><div class="num">01</div><h3>Personal Details</h3></div>
+          <div class="row"><label>Full Name <span class="star">*</span></label><input type="text" id="fullName" required></div>
+          <div class="row two">
+            <div><label>Mobile Number <span class="star">*</span></label><input type="tel" id="mobile" pattern="[0-9]{10}" maxlength="10" required></div>
+            <div id="altMobileWrap"><label>Alternative Mobile Number <span class="star">*</span></label><input type="tel" id="altMobile" pattern="[0-9]{10}" maxlength="10" required>
+              <div class="error-text" id="altMobileError" style="display:none;">Alternative number cannot be the same as Mobile Number</div>
+            </div>
+          </div>
+          <div class="row"><label>Email Address <span class="star">*</span></label><input type="email" id="email" required></div>
+          <div class="row two">
+            <div><label>Gender <span class="star">*</span></label>
+              <select id="gender" required>
+                <option value="">Select</option>
+                <option>Male</option><option>Female</option><option>Other</option>
+              </select>
+            </div>
+            <div><label>Date of Birth <span class="star">*</span></label><input type="date" id="dob" required></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head"><div class="num">02</div><h3>Qualification Details</h3></div>
+          <div id="qualBlocks"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-head"><div class="num">03</div><h3>Skills &amp; Job Preference</h3></div>
+          <div class="row"><label>Skills <span class="star">*</span></label><textarea id="skills" required placeholder="e.g. Java, SQL, Communication"></textarea></div>
+          <div class="row two">
+            <div><label>Applying For <span class="star">*</span></label>
+              <select id="applyingFor" required>
+                <option value="">Select</option><option>IT</option><option>NON IT</option>
+              </select>
+            </div>
+            <div><label>Preferred Job Role <span class="star">*</span></label><input type="text" id="preferredRole" required></div>
+          </div>
+          <div class="row two">
+            <div><label>Total Experience (Years) <span class="star">*</span></label><input type="number" min="0" step="0.1" id="totalExp" required></div>
+            <div><label>Expected Salary <span class="star">*</span></label><input type="text" id="expSalary" required placeholder="e.g. 4.5 LPA"></div>
+          </div>
+          <div class="row two">
+            <div><label>Current Location <span class="star">*</span></label><input type="text" id="currentLoc" required></div>
+            <div><label>Permanent Location <span class="star">*</span></label><input type="text" id="permanentLoc" required></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head"><div class="num">04</div><h3>Documents Upload</h3><div class="req-note">PDF / JPG / PNG</div></div>
+
+          <div class="file-row">
+            <label>10th Memo <span class="star">*</span></label>
+            <input type="file" id="tenthMemo" accept=".pdf,.jpg,.jpeg,.png" required>
+            <div class="fname" id="fname-tenthMemo"></div>
+          </div>
+          <div class="file-row">
+            <label>Inter Memo <span class="star">*</span></label>
+            <input type="file" id="interMemo" accept=".pdf,.jpg,.jpeg,.png" required>
+            <div class="fname" id="fname-interMemo"></div>
+          </div>
+          <div class="file-row">
+            <label>Degree Memo <span class="star">*</span></label>
+            <input type="file" id="degreeMemo" accept=".pdf,.jpg,.jpeg,.png" required>
+            <div class="fname" id="fname-degreeMemo"></div>
+          </div>
+          <div class="file-row others-file">
+            <label>Others <span class="star">*</span></label>
+            <select id="othersType" class="others-select" required>
+              <option value="">Select Qualification</option>
+              <option>MBA</option><option>B.Tech</option><option>M.Tech</option>
+            </select>
+            <input type="file" id="othersMemo" accept=".pdf,.jpg,.jpeg,.png" required>
+            <div class="fname" id="fname-othersMemo"></div>
+          </div>
+          <div class="file-row">
+            <label>Resume <span class="star">*</span></label>
+            <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
+            <div class="fname" id="fname-resume"></div>
+          </div>
+          <div class="file-row">
+            <label>Aadhaar <span class="star">*</span></label>
+            <input type="file" id="aadhaar" accept=".pdf,.jpg,.jpeg,.png" required>
+            <div class="fname" id="fname-aadhaar"></div>
+          </div>
+          <div class="file-row">
+            <label>Photo — Passport Size <span class="star">*</span></label>
+            <input type="file" id="photo" accept=".jpg,.jpeg,.png" required>
+            <div class="fname" id="fname-photo"></div>
+          </div>
+
+          <button type="submit" class="submit" id="submitBtn">Submit Application</button>
+          <div class="status-line" id="statusLine"></div>
+        </div>
+      </form>
+    </div>
+
+    <div class="stub" id="stub">
+      <div class="stamp">✓ Application Received</div>
+      <h2>Your Application is Registered</h2>
+      <div class="id-block">
+        <div class="id-label">Response ID</div>
+        <div class="id-value" id="responseId">—</div>
+      </div>
+      <div class="meta">
+        <strong id="stubName">—</strong> · <span id="stubRole">—</span><br>
+        Submitted: <span id="stubTime">—</span>
+      </div>
+      <div class="copy-hint" id="copyHint">⧉ Copy Response ID</div>
+      <div class="note">Save this ID — it will be used as a reference number for future follow-up.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz92XObc6R6ymONeCF_nV0AIe8l7ukSyrlG3RHhg2WfqlBeVPRh1m_oIQ7DFghUJ6KGcw/exec";
+
+// build 4 qualification blocks
+const qualBlocks = document.getElementById('qualBlocks');
+const qualLabels = ["Qualification 1","Qualification 2","Qualification 3","Qualification 4"];
+qualLabels.forEach((lbl, i) => {
+  const div = document.createElement('div');
+  div.className = 'qual-block';
+  div.innerHTML = `
+    <div class="qlabel">${lbl}</div>
+    <div class="row three">
+      <div>
+        <label>Level <span class="star">*</span></label>
+        <select class="qual-level" required>
+          <option value="">Select</option>
+          <option>10th</option><option>Inter</option><option>Degree</option><option>MBA</option><option>B.Tech</option>
+        </select>
+      </div>
+      <div><label>Institution / Board <span class="star">*</span></label><input type="text" class="qual-inst" required></div>
+      <div><label>Year <span class="star">*</span></label><input type="number" class="qual-year" min="1990" max="2030" required></div>
+      <div><label>%/CGPA <span class="star">*</span></label><input type="text" class="qual-perc" required></div>
+    </div>`;
+  qualBlocks.appendChild(div);
+});
+
+// show selected filenames
+const fileIds = ["tenthMemo","interMemo","degreeMemo","othersMemo","resume","aadhaar","photo"];
+fileIds.forEach(id=>{
+  document.getElementById(id).addEventListener('change', function(){
+    const target = document.getElementById('fname-'+id);
+    if(this.files[0]){ target.textContent = '✓ ' + this.files[0].name; target.style.display='block'; }
+  });
+});
+
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    if(!file){ resolve(null); return; }
+    const reader = new FileReader();
+    reader.onload = () => resolve({ name:file.name, mimeType:file.type, data: reader.result.split(',')[1] });
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById('altMobile').addEventListener('input', function(){
+  const mobileVal = document.getElementById('mobile').value.trim();
+  const altVal = this.value.trim();
+  const err = document.getElementById('altMobileError');
+  if (mobileVal && altVal && mobileVal === altVal) {
+    err.style.display = 'block';
+    this.classList.add('invalid');
+  } else {
+    err.style.display = 'none';
+    this.classList.remove('invalid');
+  }
+});
+
+function generateResponseId(){
+  const now = new Date();
+  const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
+  const rand = Math.floor(1000 + Math.random()*9000);
+  return `APP-${y}${m}${d}-${rand}`;
+}
+
+document.getElementById('appForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const submitBtn = document.getElementById('submitBtn');
+  const statusLine = document.getElementById('statusLine');
+
+  // Check: Mobile Number and Alternative Mobile Number must not be the same
+  const mobileVal = document.getElementById('mobile').value.trim();
+  const altMobileVal = document.getElementById('altMobile').value.trim();
+  const altMobileError = document.getElementById('altMobileError');
+  const altMobileInput = document.getElementById('altMobile');
+
+  if (mobileVal && altMobileVal && mobileVal === altMobileVal) {
+    altMobileError.style.display = 'block';
+    altMobileInput.classList.add('invalid');
+    altMobileInput.focus();
+    altMobileInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  } else {
+    altMobileError.style.display = 'none';
+    altMobileInput.classList.remove('invalid');
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+  statusLine.textContent = 'Uploading files, please wait...';
+
+  const responseId = generateResponseId();
+
+  const quals = Array.from(document.querySelectorAll('.qual-block')).map(block=>({
+    level: block.querySelector('.qual-level').value,
+    institution: block.querySelector('.qual-inst').value,
+    year: block.querySelector('.qual-year').value,
+    percentage: block.querySelector('.qual-perc').value
+  }));
+
+  try{
+    const [tenthMemo, interMemo, degreeMemo, othersMemo, resume, aadhaar, photo] = await Promise.all(
+      fileIds.map(id => fileToBase64(document.getElementById(id).files[0]))
+    );
+
+    const payload = {
+      id: responseId,
+      submittedAt: new Date().toISOString(),
+      fullName: document.getElementById('fullName').value.trim(),
+      mobile: document.getElementById('mobile').value.trim(),
+      altMobile: document.getElementById('altMobile').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      gender: document.getElementById('gender').value,
+      dob: document.getElementById('dob').value,
+      qualifications: quals,
+      skills: document.getElementById('skills').value.trim(),
+      applyingFor: document.getElementById('applyingFor').value,
+      preferredRole: document.getElementById('preferredRole').value.trim(),
+      totalExp: document.getElementById('totalExp').value,
+      expSalary: document.getElementById('expSalary').value.trim(),
+      currentLoc: document.getElementById('currentLoc').value.trim(),
+      permanentLoc: document.getElementById('permanentLoc').value.trim(),
+      othersType: document.getElementById('othersType').value,
+      files: { tenthMemo, interMemo, degreeMemo, othersMemo, resume, aadhaar, photo }
+    };
+
+    if(SCRIPT_URL && SCRIPT_URL.indexOf('http') === 0){
+      await fetch(SCRIPT_URL, {
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    document.getElementById('responseId').textContent = responseId;
+    document.getElementById('stubName').textContent = payload.fullName;
+    document.getElementById('stubRole').textContent = payload.preferredRole + ' (' + payload.applyingFor + ')';
+    document.getElementById('stubTime').textContent = new Date().toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
+
+    document.getElementById('formSection').classList.add('hidden');
+    document.getElementById('stub').classList.add('show');
+
+  }catch(err){
+    statusLine.textContent = 'Error: something went wrong while sending files, please try again.';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Application';
+  }
+});
+
+document.getElementById('copyHint').addEventListener('click', function(){
+  const id = document.getElementById('responseId').textContent;
+  navigator.clipboard.writeText(id).then(()=>{
+    this.textContent = '✓ Copied';
+    setTimeout(()=>{ this.textContent = '⧉ Copy Response ID'; }, 1500);
+  });
+});
+</script>
+</body>
+</html>
